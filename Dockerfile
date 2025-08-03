@@ -23,8 +23,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # 환경 변수 설정
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
 
 # 애플리케이션 빌드
 RUN pnpm build
@@ -37,12 +37,12 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Next.js standalone 출력 디렉토리 복사
-COPY --from=builder /app/public ./public
-
 # Next.js standalone 출력에서 필요한 파일들만 복사
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# public 디렉토리 복사 (존재하는 경우)
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # 사용자 변경
 USER nextjs
@@ -51,10 +51,10 @@ USER nextjs
 EXPOSE 3000
 
 # 환경 변수 설정
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # 애플리케이션 실행
 CMD ["node", "server.js"] 

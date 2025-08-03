@@ -76,7 +76,6 @@ dist
 
 # Gatsby 파일
 .cache/
-public
 
 # Storybook 빌드 출력
 .out
